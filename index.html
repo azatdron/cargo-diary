@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>Дневник перевозок</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <style>
+    :root{
+      --bg:#0b1220; --card:#121c2f; --card2:#17243b; --text:#eef4ff; --muted:#8fa3c1;
+      --line:rgba(255,255,255,.09); --accent:#34d399; --accent2:#60a5fa; --danger:#fb7185;
+      --shadow:0 18px 50px rgba(0,0,0,.35); --radius:20px;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#0b1220,#09101d 55%,#070c15);color:var(--text);min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+    .app{max-width:520px;margin:0 auto;min-height:100vh;padding:14px 14px 92px}
+    header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,rgba(11,18,32,.98),rgba(11,18,32,.86));backdrop-filter:blur(12px);padding:10px 0 12px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .title{font-weight:800;font-size:22px;letter-spacing:-.4px}.sub{font-size:13px;color:var(--muted);margin-top:2px}
+    .navBtn,.pill,.iconBtn,button{border:0;color:var(--text);background:var(--card2);border-radius:16px;min-height:44px;padding:0 14px;font-weight:700;font-size:15px}
+    .navBtn{width:48px;font-size:24px;padding:0}.dateBox{display:flex;gap:8px;align-items:center;margin-top:14px}.dateMid{flex:1;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 8px;box-shadow:var(--shadow)}
+    .dateMain{font-size:19px;font-weight:850}.dateWeek{font-size:13px;color:var(--muted);margin-top:2px}.todayBtn{width:100%;margin-top:10px;background:rgba(52,211,153,.14);color:#b7ffe4;border:1px solid rgba(52,211,153,.25)}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:13px}.stat span{display:block;color:var(--muted);font-size:12px}.stat b{font-size:21px;display:block;margin-top:4px}
+    .list{display:flex;flex-direction:column;gap:10px}.order{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+    .orderTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.time{font-size:16px;font-weight:850;color:#dbeafe}.price{font-size:20px;font-weight:900;color:#bbf7d0;white-space:nowrap}.route{font-size:18px;font-weight:850;line-height:1.25;margin-top:8px}.created{color:var(--muted);font-size:12px;margin-top:8px}.actions{display:flex;gap:8px;margin-top:12px}.actions button{flex:1;min-height:38px;border-radius:14px;font-size:14px}.edit{background:rgba(96,165,250,.14);color:#bfdbfe}.del{background:rgba(251,113,133,.12);color:#fecdd3}
+    .empty{text-align:center;color:var(--muted);padding:44px 20px;background:rgba(255,255,255,.03);border:1px dashed var(--line);border-radius:20px}.empty b{display:block;color:var(--text);font-size:18px;margin-bottom:7px}
+    .bottom{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(7,12,21,0),rgba(7,12,21,.96) 30%)}.bottomInner{max-width:520px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}.add{background:linear-gradient(135deg,#10b981,#22c55e);color:#04110b;font-size:17px;box-shadow:0 12px 25px rgba(16,185,129,.26)}.monthBtn{background:var(--card2);border:1px solid var(--line)}
+    dialog{width:min(94vw,500px);border:0;border-radius:24px;background:var(--card);color:var(--text);box-shadow:var(--shadow);padding:0}dialog::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}.modal{padding:18px}.modal h2{margin:0 0 14px;font-size:22px}.grid{display:grid;gap:10px}label{font-size:13px;color:var(--muted);font-weight:700}input{width:100%;margin-top:6px;background:#0c1526;color:var(--text);border:1px solid var(--line);border-radius:15px;padding:13px 12px;font-size:16px;outline:0}input:focus{border-color:rgba(96,165,250,.7)}.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.modalBtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.save{background:var(--accent);color:#03130b}.cancel{background:#25344f}.monthGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-top:12px}.dow,.day{text-align:center}.dow{color:var(--muted);font-size:12px;font-weight:800}.day{min-height:45px;border-radius:14px;background:#0c1526;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;position:relative;font-weight:800}.day.off{opacity:.25}.day.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(52,211,153,.15)}.day.has::after{content:"";position:absolute;bottom:6px;width:5px;height:5px;border-radius:99px;background:var(--accent2)}.monthHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.monthHead b{font-size:19px}.small{font-size:13px;color:var(--muted);line-height:1.35;margin-top:10px}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="top"><div><div class="title">Дневник перевозок</div><div class="sub">Откуда → куда, время и цена</div></div><button class="pill" id="exportBtn">Бэкап</button></div>
+    <div class="dateBox"><button class="navBtn" id="prevDay">‹</button><div class="dateMid" id="openCalendar"><div class="dateMain" id="dateMain"></div><div class="dateWeek" id="dateWeek"></div></div><button class="navBtn" id="nextDay">›</button></div>
+    <button class="todayBtn" id="todayBtn">Сегодня</button>
+  </header>
+  <section class="stats"><div class="stat"><span>За день</span><b id="daySum">₪0</b></div><div class="stat"><span>За месяц</span><b id="monthSum">₪0</b></div></section>
+  <main class="list" id="orders"></main>
+</div>
+<div class="bottom"><div class="bottomInner"><button class="monthBtn" id="calendarBtn">Календарь</button><button class="add" id="addBtn">+ Добавить</button></div></div>
+<dialog id="formDialog"><form class="modal" id="orderForm" method="dialog"><h2 id="formTitle">Новый заказ</h2><input type="hidden" id="editId"><div class="grid"><div class="row2"><label>Дата<input id="dateInput" type="date" required></label><label>Время<input id="timeInput" type="time"></label></div><label>Откуда<input id="fromInput" placeholder="Например: Хайфа" required></label><label>Куда<input id="toInput" placeholder="Например: Тель-Авив" required></label><label>Цена, ₪<input id="priceInput" type="number" inputmode="decimal" placeholder="900" min="0" step="1" required></label></div><div class="modalBtns"><button type="button" class="cancel" id="cancelForm">Отмена</button><button class="save" value="default">Сохранить</button></div></form></dialog>
+<dialog id="calendarDialog"><div class="modal"><div class="monthHead"><button class="navBtn" id="prevMonth">‹</button><b id="monthTitle"></b><button class="navBtn" id="nextMonth">›</button></div><div class="monthGrid" id="monthGrid"></div><div class="small">Точка под числом означает, что в этот день есть заказ.</div><div class="modalBtns"><button class="cancel" id="closeCalendar">Закрыть</button><button class="save" id="jumpToday">Сегодня</button></div></div></dialog>
+<script>
+const STORAGE_KEY='transport_diary_orders_v1';
+const $=id=>document.getElementById(id);
+const fmtDate=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`};
+const parseDate=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const dayNames=['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+const monthNames=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+let selected=new Date();let calMonth=new Date(selected.getFullYear(),selected.getMonth(),1);
+let orders=[];try{orders=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(e){orders=[]}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(orders));}
+function money(n){return '₪'+Number(n||0).toLocaleString('he-IL',{maximumFractionDigits:0});}
+function render(){const dateStr=fmtDate(selected);$('dateMain').textContent=selected.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});$('dateWeek').textContent=dayNames[selected.getDay()];
+ const dayOrders=orders.filter(o=>o.date===dateStr).sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
+ $('daySum').textContent=money(dayOrders.reduce((s,o)=>s+Number(o.price||0),0));
+ const ym=dateStr.slice(0,7);$('monthSum').textContent=money(orders.filter(o=>o.date.slice(0,7)===ym).reduce((s,o)=>s+Number(o.price||0),0));
+ const box=$('orders');box.innerHTML=''; if(!dayOrders.length){box.innerHTML='<div class="empty"><b>На этот день заказов нет</b>Нажми «+ Добавить», чтобы записать перевозку.</div>';return;}
+ dayOrders.forEach(o=>{const el=document.createElement('article');el.className='order';el.innerHTML=`<div class="orderTop"><div class="time">${o.time||'Без времени'}</div><div class="price">${money(o.price)}</div></div><div class="route">${escapeHtml(o.from)} → ${escapeHtml(o.to)}</div><div class="created">Дата: ${parseDate(o.date).toLocaleDateString('ru-RU')}</div><div class="actions"><button class="edit" onclick="editOrder('${o.id}')">Изменить</button><button class="del" onclick="deleteOrder('${o.id}')">Удалить</button></div>`;box.appendChild(el);});}
+function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+function openForm(o){$('formTitle').textContent=o?'Изменить заказ':'Новый заказ';$('editId').value=o?.id||'';$('dateInput').value=o?.date||fmtDate(selected);$('timeInput').value=o?.time||'';$('fromInput').value=o?.from||'';$('toInput').value=o?.to||'';$('priceInput').value=o?.price||'';$('formDialog').showModal();setTimeout(()=>$('timeInput').focus(),120)}
+$('orderForm').addEventListener('submit',e=>{e.preventDefault();const id=$('editId').value||String(Date.now());const item={id,date:$('dateInput').value,time:$('timeInput').value,from:$('fromInput').value.trim(),to:$('toInput').value.trim(),price:Number($('priceInput').value||0)};const idx=orders.findIndex(o=>o.id===id); if(idx>=0)orders[idx]=item;else orders.push(item);selected=parseDate(item.date);save();$('formDialog').close();render();});
+window.editOrder=id=>openForm(orders.find(o=>o.id===id));window.deleteOrder=id=>{if(confirm('Удалить этот заказ?')){orders=orders.filter(o=>o.id!==id);save();render();}};
+$('addBtn').onclick=()=>openForm();$('cancelForm').onclick=()=>$('formDialog').close();$('prevDay').onclick=()=>{selected.setDate(selected.getDate()-1);render();};$('nextDay').onclick=()=>{selected.setDate(selected.getDate()+1);render();};$('todayBtn').onclick=()=>{selected=new Date();render();};
+function renderCalendar(){const grid=$('monthGrid');grid.innerHTML='';$('monthTitle').textContent=`${monthNames[calMonth.getMonth()]} ${calMonth.getFullYear()}`;['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС'].forEach(d=>{const e=document.createElement('div');e.className='dow';e.textContent=d;grid.appendChild(e)}); const first=new Date(calMonth.getFullYear(),calMonth.getMonth(),1);let start=(first.getDay()+6)%7; const days=new Date(calMonth.getFullYear(),calMonth.getMonth()+1,0).getDate(); for(let i=0;i<start;i++){const e=document.createElement('div');e.className='day off';grid.appendChild(e)} for(let d=1;d<=days;d++){const ds=fmtDate(new Date(calMonth.getFullYear(),calMonth.getMonth(),d));const e=document.createElement('button');e.className='day'+(ds===fmtDate(selected)?' active':'')+(orders.some(o=>o.date===ds)?' has':'');e.textContent=d;e.onclick=()=>{selected=parseDate(ds);$('calendarDialog').close();render();};grid.appendChild(e)}}
+function openCalendar(){calMonth=new Date(selected.getFullYear(),selected.getMonth(),1);renderCalendar();$('calendarDialog').showModal();}
+$('calendarBtn').onclick=openCalendar;$('openCalendar').onclick=openCalendar;$('closeCalendar').onclick=()=>$('calendarDialog').close();$('prevMonth').onclick=()=>{calMonth.setMonth(calMonth.getMonth()-1);renderCalendar();};$('nextMonth').onclick=()=>{calMonth.setMonth(calMonth.getMonth()+1);renderCalendar();};$('jumpToday').onclick=()=>{selected=new Date();$('calendarDialog').close();render();};
+$('exportBtn').onclick=()=>{const data=JSON.stringify(orders,null,2);const blob=new Blob([data],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='transport-diary-backup.json';a.click();URL.revokeObjectURL(a.href);};
+let sx=0;document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>70){selected.setDate(selected.getDate()+(dx<0?1:-1));render();}},{passive:true});
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}render();
+</script>
+</body></html>
