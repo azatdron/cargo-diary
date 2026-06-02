@@ -3,137 +3,90 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#063d3d" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Календарь перевозок" />
+  <meta name="theme-color" content="#063a35" />
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="icon" href="icon.svg" />
   <title>Календарь перевозок</title>
   <style>
     :root{
-      --bg1:#073b3b; --bg2:#061a24; --card:rgba(10,42,50,.78); --card2:rgba(12,55,57,.74);
-      --line:rgba(255,255,255,.11); --text:#f3f7f7; --muted:rgba(243,247,247,.58);
-      --green:#5ed28e; --green2:#35b878; --danger:#e15f6a; --btn:#123443;
-      --shadow:0 18px 48px rgba(0,0,0,.34);
+      --bg1:#063e39;--bg2:#03171a;--card:rgba(6,42,42,.68);--card2:rgba(9,49,48,.72);
+      --text:#f8faf9;--muted:rgba(248,250,249,.58);--line:rgba(255,255,255,.22);--line2:rgba(255,255,255,.34);
+      --green:#31d17c;--green2:#6ee7a1;--red:#ff4b45;--shadow:0 18px 60px rgba(0,0,0,.32);
+      --cell:rgba(255,255,255,.035);--input:rgba(255,255,255,.08);
+    }
+    body.light{
+      --bg1:#eef3f2;--bg2:#dfe8e6;--card:rgba(255,255,255,.78);--card2:rgba(255,255,255,.88);
+      --text:#101718;--muted:rgba(16,23,24,.58);--line:rgba(0,0,0,.18);--line2:rgba(0,0,0,.32);
+      --green:#26bf70;--green2:#62d895;--red:#ef3d36;--shadow:0 14px 34px rgba(12,30,32,.12);
+      --cell:rgba(255,255,255,.52);--input:rgba(255,255,255,.75);
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%;margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 50% -10%, #0a6761 0%, var(--bg1) 34%, var(--bg2) 100%);overflow:hidden}
-    body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);}
-    .app{height:100%;width:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;padding:16px 18px 14px;position:relative;}
-    .top{display:flex;align-items:center;justify-content:space-between;margin-top:8px;margin-bottom:14px;min-height:40px}
-    h1{font-size:27px;line-height:1.08;margin:0;font-weight:850;letter-spacing:-.7px;text-shadow:0 2px 18px rgba(0,0,0,.28)}
-    .share{border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--text);height:42px;width:42px;border-radius:16px;font-size:20px;font-weight:800;display:grid;place-items:center;box-shadow:0 10px 28px rgba(0,0,0,.16)}
-    .monthCard{flex:0 0 auto;background:linear-gradient(180deg,rgba(14,66,70,.72),rgba(6,28,40,.58));border:1px solid var(--line);border-radius:28px;padding:18px 14px 14px;box-shadow:var(--shadow);backdrop-filter:blur(16px);}
-    .monthHead{display:grid;grid-template-columns:48px 1fr 48px;align-items:center;gap:10px;margin-bottom:18px}
-    .nav{height:48px;width:48px;border:0;border-radius:17px;background:rgba(255,255,255,.08);color:white;font-size:36px;line-height:1;font-weight:600;display:grid;place-items:center}
-    .monthTitle{text-align:center;font-size:28px;font-weight:850;letter-spacing:-.5px}
-    .weekdays,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
-    .weekdays{margin-bottom:8px;color:var(--muted);font-size:16px;font-weight:800;text-align:center}
-    .day{height:45px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);color:var(--text);font-size:21px;font-weight:850;display:flex;align-items:center;justify-content:center;position:relative;user-select:none}
-    .day.weekend{color:rgba(255,255,255,.55)}
-    .day.selected{background:linear-gradient(135deg,var(--green),var(--green2));color:#07211a;border-color:rgba(255,255,255,.18);box-shadow:0 10px 25px rgba(56,208,130,.25)}
-    .day.has::after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:var(--green);bottom:5px;left:50%;transform:translateX(-50%)}
-    .day.selected.has::after{background:#07351f}
-    .empty{height:45px}
-    .below{flex:1;min-height:0;display:flex;flex-direction:column;padding-top:12px;}
-    .selectedLine{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 2px 9px;color:var(--muted);font-weight:800;font-size:15px}
-    .sum{color:var(--green);font-size:16px}
-    .orders{flex:1;min-height:76px;overflow:auto;padding-right:2px;padding-bottom:8px;-webkit-overflow-scrolling:touch;}
-    .emptyText{height:100%;display:grid;place-items:center;text-align:center;color:rgba(255,255,255,.36);font-size:16px;font-weight:700;border:1px dashed rgba(255,255,255,.12);border-radius:22px;padding:16px}
-    .order{background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.11);border-radius:20px;padding:12px 13px;margin-bottom:9px;box-shadow:0 9px 20px rgba(0,0,0,.14)}
-    .orderMain{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:9px}
-    .route{font-size:17px;line-height:1.22;font-weight:850;letter-spacing:-.2px}.meta{margin-top:3px;color:var(--muted);font-size:14px;font-weight:750}.price{font-size:18px;font-weight:900;color:var(--green);white-space:nowrap}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.smallBtn{height:38px;border:0;border-radius:14px;font-size:15px;font-weight:850;color:#dce8ee;background:rgba(255,255,255,.09)}.smallBtn.del{background:rgba(225,95,106,.16);color:#ffb7bf}
-    .add{height:60px;border:0;border-radius:22px;background:linear-gradient(135deg,#6cdaa0,#20bd6d);color:#062619;font-size:22px;font-weight:950;box-shadow:0 16px 38px rgba(25,190,110,.24);margin-top:8px}
-    .monthCard{transition:transform .24s ease, opacity .24s ease}.monthCard.slide-left{transform:translateX(-22px);opacity:.58}.monthCard.slide-right{transform:translateX(22px);opacity:.58}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;z-index:20}.modal.show{display:flex}.sheet{width:100%;max-width:480px;margin:0 auto;background:#091821;border:1px solid rgba(255,255,255,.12);border-radius:24px 24px 0 0;padding:12px 14px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -18px 50px rgba(0,0,0,.42);max-height:78vh;overflow:auto}.sheetHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.sheetTitle{font-size:20px;font-weight:900}.x{border:0;background:rgba(255,255,255,.08);color:white;width:38px;height:38px;border-radius:14px;font-size:24px}.form{display:grid;gap:8px}.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}label{display:grid;gap:5px;color:var(--muted);font-weight:800;font-size:12px}input{height:44px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:white;font-size:16px;font-weight:750;padding:0 11px;outline:none;min-width:0}input:focus{border-color:rgba(94,210,142,.66)}.save{height:50px;border:0;border-radius:18px;background:linear-gradient(135deg,#6cdaa0,#20bd6d);color:#052316;font-size:19px;font-weight:950;margin-top:4px}.hint{font-size:11px;color:rgba(255,255,255,.38);font-weight:700;margin-top:-2px}.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:rgba(5,18,24,.9);border:1px solid rgba(255,255,255,.12);color:white;border-radius:16px;padding:10px 14px;font-weight:800;display:none;z-index:40}.toast.show{display:block}
-    @media (max-height:720px){.app{padding-top:9px}.top{margin-bottom:8px}.monthCard{padding:13px 12px 12px}.monthHead{margin-bottom:10px}.day,.empty{height:39px;border-radius:14px}.weekdays{font-size:14px;margin-bottom:5px}.monthTitle{font-size:24px}.nav{height:42px;width:42px}.add{height:54px}.order{padding:10px 12px}.below{padding-top:8px}}
+    html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 50% 0%,var(--bg1),var(--bg2) 72%);color:var(--text)}
+    body{padding:calc(env(safe-area-inset-top) + 22px) 16px calc(env(safe-area-inset-bottom) + 22px);overflow-x:hidden}
+    .app{max-width:430px;margin:0 auto;min-height:100dvh;position:relative}
+    header{display:flex;align-items:center;gap:10px;margin:58px 2px 18px}
+    h1{font-size:27px;line-height:1.04;margin:0;font-weight:900;letter-spacing:-.8px;flex:1;text-shadow:0 2px 10px rgba(0,0,0,.2)}
+    .iconBtn{width:48px;height:48px;border-radius:16px;border:1.6px solid var(--line2);background:var(--card);color:var(--text);display:grid;place-items:center;font-size:25px;font-weight:800;box-shadow:var(--shadow)}
+    .themeBtn{font-size:22px}.shareBtn{font-size:23px}
+    .calendarCard{border:1.7px solid var(--line2);border-radius:26px;background:linear-gradient(180deg,var(--card),rgba(5,34,35,.42));padding:18px 16px 20px;box-shadow:var(--shadow);overflow:hidden;touch-action:pan-y}
+    body.light .calendarCard{background:var(--card2)}
+    .monthTop{display:grid;grid-template-columns:54px 1fr 54px;align-items:center;margin:0 2px 14px}
+    .navBtn{height:54px;border-radius:18px;border:1.6px solid var(--line);background:rgba(255,255,255,.065);color:var(--text);font-size:36px;font-weight:700;line-height:1;display:grid;place-items:center}
+    body.light .navBtn{background:rgba(255,255,255,.65)}
+    .monthTitle{text-align:center;font-size:28px;font-weight:900;letter-spacing:-.5px}
+    .week,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:9px}
+    .week{margin-bottom:9px}.week div{text-align:center;color:var(--muted);font-size:17px;font-weight:900}.week div.sat{color:var(--red)}
+    .grid{transition:transform .22s ease,opacity .22s ease}.grid.slideL{transform:translateX(-18px);opacity:.45}.grid.slideR{transform:translateX(18px);opacity:.45}
+    .day{height:47px;border-radius:14px;border:1.8px solid var(--line);background:var(--cell);color:var(--text);font-size:23px;font-weight:900;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:inset 0 0 0 .4px rgba(255,255,255,.04)}
+    body.light .day{background:rgba(255,255,255,.55);border-color:rgba(0,0,0,.2)}
+    .day.sat{color:var(--red)}
+    .day.empty{visibility:hidden}.day.selected{border-color:var(--green2);box-shadow:0 0 0 2px rgba(49,209,124,.16)}
+    .day.closed{background:linear-gradient(145deg,var(--green2),var(--green));color:#062019;border-color:rgba(255,255,255,.22)}
+    .day.closed.sat{color:#062019}.day.today::after{content:"";position:absolute;bottom:5px;width:6px;height:6px;border-radius:50%;background:#fff}.light .day.today::after{background:#000}.day.closed.today::after{display:none}
+    .summary{display:flex;justify-content:space-between;align-items:center;margin:16px 3px 8px;color:var(--muted);font-weight:900;font-size:16px}.sum{color:var(--green2);font-size:18px}
+    .orders{display:flex;flex-direction:column;gap:8px;max-height:250px;overflow:auto;padding-bottom:76px;scrollbar-width:none}.orders::-webkit-scrollbar{display:none}
+    .emptyBox{border:1.8px dashed var(--line);border-radius:20px;min-height:108px;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:16px;font-weight:800;padding:16px}
+    .order{border:1.6px solid var(--line2);background:linear-gradient(180deg,var(--card2),rgba(255,255,255,.02));border-radius:18px;padding:12px 12px;display:grid;grid-template-columns:56px 1fr auto auto auto;gap:9px;align-items:center;box-shadow:0 10px 24px rgba(0,0,0,.11)}
+    body.light .order{background:rgba(255,255,255,.78)}
+    .time{font-size:15px;font-weight:900;color:var(--muted)}.route{font-size:17px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.price{font-size:16px;font-weight:950;color:var(--green2);white-space:nowrap}.mini{width:38px;height:38px;border-radius:50%;border:0;color:white;font-size:18px;font-weight:900;display:grid;place-items:center}.edit{background:linear-gradient(145deg,#1db461,#3ad381)}.del{background:linear-gradient(145deg,#d9302c,#ff514b)}
+    .addRow{position:fixed;left:calc(50% - 215px + 16px);bottom:calc(env(safe-area-inset-bottom) + 18px);display:flex;align-items:center;gap:12px;z-index:5;color:var(--green2);font-weight:900;font-size:17px}.addCircle{width:58px;height:58px;border-radius:50%;border:1.5px solid rgba(255,255,255,.22);background:linear-gradient(145deg,var(--green2),var(--green));color:#fff;font-size:42px;line-height:1;display:grid;place-items:center;box-shadow:0 15px 32px rgba(0,0,0,.26)}
+    @media(max-width:430px){.addRow{left:16px}.day{height:46px;font-size:22px}.week,.grid{gap:8px}h1{font-size:26px}}
+    .sheet{position:fixed;inset:0;background:rgba(0,0,0,.48);display:none;align-items:end;z-index:20}.sheet.show{display:flex}.modal{width:100%;max-width:430px;margin:0 auto;background:#071c22;color:var(--text);border:1.5px solid var(--line2);border-radius:28px 28px 0 0;padding:18px 18px calc(env(safe-area-inset-bottom) + 18px);box-shadow:0 -18px 50px rgba(0,0,0,.36)}body.light .modal{background:#f4f7f6;color:#101718}.modalHead{display:flex;align-items:center;margin-bottom:10px}.modal h2{margin:0;flex:1;font-size:25px}.close{width:46px;height:46px;border-radius:15px;border:0;background:rgba(255,255,255,.1);color:var(--text);font-size:30px}.form{display:grid;gap:10px}.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field label{display:block;color:var(--muted);font-size:14px;font-weight:900;margin:0 0 5px}.field input{width:100%;height:46px;border-radius:15px;border:1.6px solid var(--line2);background:var(--input);color:var(--text);font-size:18px;font-weight:800;padding:0 12px;outline:none}.save{height:56px;border:0;border-radius:18px;background:linear-gradient(145deg,var(--green2),var(--green));font-size:22px;font-weight:950;color:#062019;margin-top:4px}.hint{font-size:12px;color:var(--muted);font-weight:700}
   </style>
 </head>
 <body>
-  <main class="app" id="app">
-    <div class="top">
-      <h1>Календарь перевозок</h1>
-      <button class="share" id="shareBtn" title="Поделиться">↗</button>
-    </div>
-    <section class="monthCard" id="swipeArea">
-      <div class="monthHead">
-        <button class="nav" id="prev">‹</button>
-        <div class="monthTitle" id="monthTitle"></div>
-        <button class="nav" id="next">›</button>
-      </div>
-      <div class="weekdays"><div>ПН</div><div>ВТ</div><div>СР</div><div>ЧТ</div><div>ПТ</div><div>СБ</div><div>ВС</div></div>
-      <div class="grid" id="grid"></div>
-    </section>
-    <section class="below">
-      <div class="selectedLine"><span id="selectedLabel"></span><span class="sum" id="daySum"></span></div>
-      <div class="orders" id="orders"></div>
-      <button class="add" id="addBtn">+ Добавить заказ</button>
-    </section>
-  </main>
-
-  <div class="modal" id="modal">
-    <div class="sheet">
-      <div class="sheetHead"><div class="sheetTitle" id="formTitle">Добавить заказ</div><button class="x" id="closeModal">×</button></div>
-      <form class="form" id="form">
-        <div class="row2"><label>Время<input id="time" type="time" required></label><label>Цена ₪<input id="price" inputmode="decimal" placeholder="900" required></label></div>
-        <label>Откуда<input id="from" list="places" placeholder="Хайфа" autocomplete="off" required></label>
-        <label>Куда<input id="to" list="places" placeholder="Тель-Авив" autocomplete="off" required></label>
-        <div class="hint">Можно выбрать из списка или написать своё место.</div>
-        <button class="save" type="submit">Сохранить</button>
-      </form>
-      <datalist id="places"><option value="Абу-Гош"></option><option value="Аfula"></option><option value="Акра"></option><option value="Акко"></option><option value="Арад"></option><option value="Ариэль"></option><option value="Ашдод"></option><option value="Ашкелон"></option><option value="Бака-эль-Гарбия"></option><option value="Бат-Ям"></option><option value="Беэр-Шева"></option><option value="Бейт-Шеан"></option><option value="Бейт-Шемеш"></option><option value="Бней-Брак"></option><option value="Ган-Явне"></option><option value="Ганей-Тиква"></option><option value="Гедера"></option><option value="Гиватаим"></option><option value="Гиват-Шмуэль"></option><option value="Герцлия"></option><option value="Далият-эль-Кармель"></option><option value="Димона"></option><option value="Дром Хеврон"></option><option value="Зихрон-Яаков"></option><option value="Иерусалим"></option><option value="Йокнеам"></option><option value="Кабри"></option><option value="Кармель"></option><option value="Кармиэль"></option><option value="Кацрин"></option><option value="Кесария"></option><option value="Кирьят-Ата"></option><option value="Кирьят-Бялик"></option><option value="Кирьят-Гат"></option><option value="Кирьят-Малахи"></option><option value="Кирьят-Моцкин"></option><option value="Кирьят-Оно"></option><option value="Кирьят-Шмона"></option><option value="Кирьят-Тивон"></option><option value="Кфар-Саба"></option><option value="Кфар-Йона"></option><option value="Кфар-Масарик"></option><option value="Кфар-Врадим"></option><option value="Кфар-Хабад"></option><option value="Лод"></option><option value="Маалот-Таршиха"></option><option value="Мигдаль-ха-Эмек"></option><option value="Модиин"></option><option value="Модиин-Илит"></option><option value="Нагария"></option><option value="Назарет"></option><option value="Нацерет-Илит"></option><option value="Нес-Циона"></option><option value="Нетания"></option><option value="Нетивот"></option><option value="Нешер"></option><option value="Ор-Акива"></option><option value="Ор-Йехуда"></option><option value="Офаким"></option><option value="Пардес-Хана"></option><option value="Петах-Тиква"></option><option value="Раанана"></option><option value="Рамат-Ган"></option><option value="Рамат-ха-Шарон"></option><option value="Рамла"></option><option value="Реховот"></option><option value="Ришон-ле-Цион"></option><option value="Рош-ха-Аин"></option><option value="Сдерот"></option><option value="Сахнин"></option><option value="Тамра"></option><option value="Тверия"></option><option value="Тель-Авив"></option><option value="Тель-Монд"></option><option value="Тира"></option><option value="Тират-Кармель"></option><option value="Умм-эль-Фахм"></option><option value="Хадера"></option><option value="Хайфа"></option><option value="Ход-ха-Шарон"></option><option value="Холон"></option><option value="Хура"></option><option value="Цфат"></option><option value="Явне"></option><option value="Яффо"></option><option value="Йехуд"></option><option value="Эйлат"></option><option value="Эльад"></option><option value="Герцлия-Питуах"></option><option value="Савьон"></option><option value="Шохам"></option><option value="Кибуц Баркай"></option><option value="Кибуц Бейт-Альфа"></option><option value="Кибуц Бейт-Орен"></option><option value="Кибуц Ган-Шмуэль"></option><option value="Кибуц Дгания"></option><option value="Кибуц Дорот"></option><option value="Кибуц Еврон"></option><option value="Кибуц Изреэль"></option><option value="Кибуц Кабри"></option><option value="Кибуц Лохамей-ха-Гетаот"></option><option value="Кибуц Мааган-Михаэль"></option><option value="Кибуц Мерхавия"></option><option value="Кибуц Мишмар-ха-Эмек"></option><option value="Кибуц Нахшолим"></option><option value="Кибуц Нир-Давид"></option><option value="Кибуц Саса"></option><option value="Кибуц Ягур"></option></datalist>
-    </div>
+  <div class="app">
+    <header><h1>Календарь перевозок</h1><button class="iconBtn themeBtn" id="themeBtn">☾</button><button class="iconBtn shareBtn" id="shareBtn">↗</button></header>
+    <section class="calendarCard" id="swipeArea"><div class="monthTop"><button class="navBtn" id="prev">‹</button><div class="monthTitle" id="monthTitle"></div><button class="navBtn" id="next">›</button></div><div class="week" id="week"></div><div class="grid" id="grid"></div></section>
+    <div class="summary"><span id="selectedLabel"></span><span class="sum" id="dayTotal"></span></div>
+    <div class="orders" id="orders"></div>
+    <button class="addRow" id="addBtn"><span class="addCircle">+</span><span>Добавить заказ</span></button>
   </div>
-  <div class="toast" id="toast"></div>
+  <div class="sheet" id="sheet"><div class="modal"><div class="modalHead"><h2 id="modalTitle">Добавить заказ</h2><button class="close" id="close">×</button></div><form class="form" id="form"><div class="field"><label>Время</label><input id="time" type="time"></div><div class="row2"><div class="field"><label>Откуда</label><input id="from" list="cities" placeholder="Хайфа"></div><div class="field"><label>Куда</label><input id="to" list="cities" placeholder="Тель-Авив"></div></div><div class="field"><label>Цена ₪</label><input id="price" type="number" inputmode="numeric" placeholder="900"></div><div class="hint">Можно выбрать город из списка или написать вручную.</div><button class="save" type="submit">Сохранить</button></form></div></div>
+  <datalist id="cities"></datalist>
 <script>
-const KEY='cargoDiaryV3'; // оставляем ключ, чтобы старые заказы не пропали
+const VERSION='v6.0-final';
 const months=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-let data=JSON.parse(localStorage.getItem(KEY)||'{}');
-let today=new Date(); let view=new Date(today.getFullYear(),today.getMonth(),1); let selected=fmt(today); let editing=null;
-const $=id=>document.getElementById(id);
-function fmt(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
-function parseDate(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
-function save(){localStorage.setItem(KEY,JSON.stringify(data))}
-function dayOrders(date=selected){return (data[date]||[]).sort((a,b)=>(a.time||'').localeCompare(b.time||''))}
-function monthKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
-function setMonthBySelected(){const d=parseDate(selected);view=new Date(d.getFullYear(),d.getMonth(),1)}
-function render(){renderMonth();renderOrders()}
-function renderMonth(){
-  $('monthTitle').textContent=`${months[view.getMonth()]} ${view.getFullYear()}`;
-  const grid=$('grid'); grid.innerHTML='';
-  const first=new Date(view.getFullYear(),view.getMonth(),1);
-  const last=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
-  const offset=(first.getDay()+6)%7;
-  for(let i=0;i<offset;i++){const e=document.createElement('div');e.className='empty';grid.appendChild(e)}
-  for(let day=1;day<=last;day++){
-    const d=new Date(view.getFullYear(),view.getMonth(),day); const key=fmt(d); const btn=document.createElement('button');
-    btn.className='day'; if(d.getDay()===0||d.getDay()===6)btn.classList.add('weekend'); if(key===selected)btn.classList.add('selected'); if(dayOrders(key).length)btn.classList.add('has');
-    btn.textContent=day; btn.onclick=()=>{selected=key;render()}; grid.appendChild(btn);
-  }
-}
-function renderOrders(){
-  const d=parseDate(selected); $('selectedLabel').textContent=`${d.getDate()} ${months[d.getMonth()].toLowerCase()} · ${['Вс','Пн','Вт','Ср','Чт','Пт','Сб'][d.getDay()]}`;
-  const list=dayOrders(); const total=list.reduce((s,o)=>s+(parseFloat(String(o.price).replace(',','.'))||0),0); $('daySum').textContent=list.length?`₪${total.toLocaleString('ru-RU')}`:'';
-  const box=$('orders'); box.innerHTML='';
-  if(!list.length){box.innerHTML='<div class="emptyText">На этот день заказов нет.<br>Нажми «Добавить заказ».</div>';return}
-  list.forEach((o,i)=>{const div=document.createElement('div');div.className='order';div.innerHTML=`<div class="orderMain"><div><div class="route">${esc(o.from)} → ${esc(o.to)}</div><div class="meta">${esc(o.time||'Без времени')}</div></div><div class="price">₪${esc(o.price)}</div></div><div class="actions"><button class="smallBtn" data-edit="${i}">✏️</button><button class="smallBtn del">❌</button><button style='display:none' class="smallBtn del" data-del="${i}">Удалить</button></div>`;box.appendChild(div)});
-  box.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openForm(Number(b.dataset.edit)));
-  box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>delOrder(Number(b.dataset.del)));
-}
-function esc(s){return String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
-function openForm(idx=null){editing=idx;const o=idx===null?{}:dayOrders()[idx];$('formTitle').textContent=idx===null?'Добавить заказ':'Изменить заказ';$('time').value=o.time||'';$('from').value=o.from||'';$('to').value=o.to||'';$('price').value=o.price||'';$('modal').classList.add('show');setTimeout(()=>$('time').focus(),120)}
-function closeForm(){$('modal').classList.remove('show');editing=null;$('form').reset()}
-function delOrder(idx){if(!confirm('Удалить заказ?'))return;let list=dayOrders();list.splice(idx,1);data[selected]=list;if(!list.length)delete data[selected];save();render();toast('Удалено')}
-$('form').onsubmit=e=>{e.preventDefault();let list=dayOrders();const o={time:$('time').value,from:$('from').value.trim(),to:$('to').value.trim(),price:$('price').value.trim()}; if(editing===null)list.push(o);else list[editing]=o;data[selected]=list;save();closeForm();render();toast('Сохранено')};
-$('addBtn').onclick=()=>openForm(); $('closeModal').onclick=closeForm; $('modal').onclick=e=>{if(e.target.id==='modal')closeForm()};
-function changeMonth(delta){const card=$('swipeArea');card.classList.add(delta>0?'slide-left':'slide-right');setTimeout(()=>{view=new Date(view.getFullYear(),view.getMonth()+delta,1); selected=fmt(new Date(view.getFullYear(),view.getMonth(),1)); render(); card.classList.remove('slide-left','slide-right');},150)}
-$('prev').onclick=()=>changeMonth(-1);
-$('next').onclick=()=>changeMonth(1);
-function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1500)}
-$('shareBtn').onclick=async()=>{const url=location.href.split('#')[0];const text='Календарь перевозок — открой ссылку в Safari и добавь на экран «Домой».';try{if(navigator.share)await navigator.share({title:'Календарь перевозок',text,url});else{await navigator.clipboard.writeText(url);toast('Ссылка скопирована')}}catch(e){}}
-let sx=0,sy=0;const area=$('swipeArea');area.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});area.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.3){if(dx<0)$('next').click();else $('prev').click()}},{passive:true});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+const week=['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'];
+const cities=['Хайфа','Тель-Авив','Иерусалим','Беэр-Шева','Акко','Тверия','Нагария','Кирьят-Ата','Кирьят-Бялик','Кирьят-Моцкин','Кирьят-Ям','Нешер','Тират-Кармель','Афула','Ноф-ха-Галиль','Назарет','Кармиэль','Цфат','Рош-Пина','Кацрин','Хадера','Нетания','Герцлия','Рамат-Ган','Гиватаим','Бат-Ям','Холон','Ришон-ле-Цион','Реховот','Нес-Циона','Ашдод','Ашкелон','Кирьят-Гат','Сдерот','Эйлат','Петах-Тиква','Кфар-Саба','Раанана','Ход-ха-Шарон','Рамат-ха-Шарон','Модиин','Лод','Рамла','Йокнеам','Зихрон-Яаков','Пардес-Хана','Ор-Акива','Кейсария','Маалот-Таршиха','Шломи','Кирьят-Шмона','Метулла','Далият-эль-Кармель','Осфия','Сахнин','Шфарам','Тамра','Умм-эль-Фахм','Арад','Димона','Нетивот','Офаким','Мицпе-Рамон','Явне','Ган-Явне','Кфар-Йона','Биньямина','Гиват-Ада','Кибуц Ягур','Кибуц Лохамей-ха-Гетаот','Кибуц Эйн-Гев','Кибуц Дгания','Кибуц Мааган-Михаэль','Кибуц Нахшолим','Кибуц Бейт-Альфа'];
+cities.forEach(c=>{let o=document.createElement('option');o.value=c;document.getElementById('cities').appendChild(o)});
+let today=new Date();let view=new Date(today.getFullYear(),today.getMonth(),1);let selected=new Date(today.getFullYear(),today.getMonth(),today.getDate());let editId=null;
+const $=id=>document.getElementById(id);const key='cargoDiaryOrdersV6';
+let orders=JSON.parse(localStorage.getItem(key)||'[]');
+function save(){localStorage.setItem(key,JSON.stringify(orders))}function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}function money(n){return '₪'+Number(n||0).toLocaleString('ru-RU')}function dayName(d){return ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'][d.getDay()]}
+function render(){renderWeek();renderCal();renderOrders();$('themeBtn').textContent=document.body.classList.contains('light')?'☀':'☾'}
+function renderWeek(){ $('week').innerHTML=week.map((w,i)=>`<div class="${i==6?'sat':''}">${w}</div>`).join('') }
+function renderCal(){ $('monthTitle').textContent=months[view.getMonth()]+' '+view.getFullYear(); const grid=$('grid'); grid.innerHTML=''; let first=new Date(view.getFullYear(),view.getMonth(),1).getDay(); let days=new Date(view.getFullYear(),view.getMonth()+1,0).getDate(); for(let i=0;i<first;i++){let e=document.createElement('button');e.className='day empty';grid.appendChild(e)} for(let d=1;d<=days;d++){let date=new Date(view.getFullYear(),view.getMonth(),d);let k=ymd(date);let has=orders.some(o=>o.date===k);let el=document.createElement('button');el.className='day'+(date.getDay()==6?' sat':'')+(ymd(date)===ymd(selected)?' selected':'')+(has?' closed':'')+(ymd(date)===ymd(today)?' today':'');el.textContent=d;el.onclick=()=>{selected=date;render()};grid.appendChild(el)}}
+function renderOrders(){let k=ymd(selected);let list=orders.filter(o=>o.date===k).sort((a,b)=>(a.time||'').localeCompare(b.time||''));$('selectedLabel').textContent=selected.getDate()+' '+months[selected.getMonth()].toLowerCase()+' • '+dayName(selected);$('dayTotal').textContent=list.length?money(list.reduce((s,o)=>s+Number(o.price||0),0)):''; if(!list.length){$('orders').innerHTML='<div class="emptyBox">На этот день заказов нет.<br>Нажми «Добавить заказ».</div>';return} $('orders').innerHTML=list.map(o=>`<div class="order"><div class="time">${o.time||'--:--'}</div><div class="route">${esc(o.from)} → ${esc(o.to)}</div><div class="price">${money(o.price)}</div><button class="mini edit" onclick="editOrder('${o.id}')">✎</button><button class="mini del" onclick="delOrder('${o.id}')">🗑</button></div>`).join('')}
+function esc(s){return String(s||'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
+function changeMonth(n){const grid=$('grid');grid.classList.add(n>0?'slideL':'slideR');setTimeout(()=>{view=new Date(view.getFullYear(),view.getMonth()+n,1);selected=new Date(view.getFullYear(),view.getMonth(),1);grid.classList.remove('slideL','slideR');render()},180)}
+$('prev').onclick=()=>changeMonth(-1);$('next').onclick=()=>changeMonth(1);$('addBtn').onclick=()=>openForm();$('close').onclick=()=>closeForm();$('sheet').onclick=e=>{if(e.target.id==='sheet')closeForm()};
+function openForm(o=null){editId=o?.id||null;$('modalTitle').textContent=editId?'Изменить заказ':'Добавить заказ';$('time').value=o?.time||'';$('from').value=o?.from||'';$('to').value=o?.to||'';$('price').value=o?.price||'';$('sheet').classList.add('show');setTimeout(()=>$('time').focus(),100)}function closeForm(){$('sheet').classList.remove('show')}
+$('form').onsubmit=e=>{e.preventDefault();let obj={id:editId||String(Date.now()),date:ymd(selected),time:$('time').value,from:$('from').value.trim(),to:$('to').value.trim(),price:$('price').value}; if(!obj.from&&!obj.to&&!obj.price)return; if(editId){orders=orders.map(o=>o.id===editId?obj:o)}else orders.push(obj);save();closeForm();render()}
+window.editOrder=id=>openForm(orders.find(o=>o.id===id));window.delOrder=id=>{if(confirm('Удалить заказ?')){orders=orders.filter(o=>o.id!==id);save();render()}}
+$('themeBtn').onclick=()=>{document.body.classList.toggle('light');localStorage.setItem('cargoTheme',document.body.classList.contains('light')?'light':'dark');render()}; if(localStorage.getItem('cargoTheme')==='light')document.body.classList.add('light');
+$('shareBtn').onclick=async()=>{let url=location.origin+location.pathname; if(navigator.share){try{await navigator.share({title:'Календарь перевозок',text:'Календарь перевозок',url})}catch(e){}}else{prompt('Ссылка:',url)}};
+let sx=0,sy=0;$('swipeArea').addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});$('swipeArea').addEventListener('touchend',e=>{let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4)changeMonth(dx<0?1:-1)},{passive:true});
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=6').catch(()=>{})}
 render();
 </script>
-</body>
-</html>
+</body></html>
