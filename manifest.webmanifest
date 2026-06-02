@@ -1,1 +1,1 @@
-{"name":"Дневник перевозок","short_name":"Перевозки","start_url":"./","display":"standalone","background_color":"#f4f7fb","theme_color":"#f4f7fb","icons":[{"src":"icon.svg","sizes":"512x512","type":"image/svg+xml"}]}
+{"name":"Календарь перевозок","short_name":"Перевозки","start_url":"./","display":"standalone","background_color":"#063d3d","theme_color":"#063d3d","orientation":"portrait","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]}
