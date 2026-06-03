@@ -62,7 +62,16 @@
     .timeHint{font-size:11px;color:var(--muted);font-weight:700;margin-top:-2px;}
     @media(max-width:380px){.timePick{gap:7px}.timePick select{height:39px;font-size:16px;padding:0 8px;}}
 
-  </style>
+  
+    /* v17: light theme closed days and action button outlines */
+    body.light .day.closed{background:linear-gradient(145deg,#42d884,#158a51) !important;color:#062019 !important;border-color:#1f9b61 !important;box-shadow:0 0 0 2px rgba(31,155,97,.16) !important;}
+    body.light .day.closed.sat{color:#062019 !important;}
+    .mini{border:1.5px solid rgba(255,255,255,.38) !important;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18),0 8px 18px rgba(0,0,0,.16);}
+    body.light .mini{border:1.5px solid rgba(0,0,0,.16) !important;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.28),0 8px 18px rgba(0,0,0,.10);}
+    .edit{border-color:rgba(118,255,181,.45) !important;}
+    .del{border-color:rgba(255,175,175,.50) !important;}
+  
+</style>
 </head>
 <body>
   <div class="app">
@@ -75,7 +84,7 @@
   <div class="sheet" id="sheet"><div class="modal"><div class="modalHead"><h2 id="modalTitle">Добавить</h2><button class="close" id="close">×</button></div><form class="form" id="form"><div id="formFields" class="fields"></div><button class="save" type="submit">Сохранить</button></form></div></div>
   <datalist id="cities"></datalist>
 <script>
-const VERSION='v16-time-picker';
+const VERSION='v17-light-closed-actions';
 const months=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 const week=['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'];
 const cities=['Хайфа','Тель-Авив','Иерусалим','Беэр-Шева','Акко','Тверия','Нагария','Кирьят-Ата','Кирьят-Бялик','Кирьят-Моцкин','Кирьят-Ям','Нешер','Тират-Кармель','Афула','Ноф-ха-Галиль','Назарет','Кармиэль','Цфат','Рош-Пина','Кацрин','Хадера','Нетания','Герцлия','Рамат-Ган','Гиватаим','Бат-Ям','Холон','Ришон-ле-Цион','Реховот','Нес-Циона','Ашдод','Ашкелон','Кирьят-Гат','Сдерот','Эйлат','Петах-Тиква','Кфар-Саба','Раанана','Ход-ха-Шарон','Рамат-ха-Шарон','Модиин','Лод','Рамла','Йокнеам','Зихрон-Яаков','Пардес-Хана','Ор-Акива','Кейсария','Маалот-Таршиха','Шломи','Кирьят-Шмона','Метулла','Далият-эль-Кармель','Осфия','Сахнин','Шфарам','Тамра','Умм-эль-Фахм','Арад','Димона','Нетивот','Офаким','Мицпе-Рамон','Явне','Ган-Явне','Кфар-Йона','Биньямина','Гиват-Ада','Кибуц Ягур','Кибуц Лохамей-ха-Гетаот','Кибуц Эйн-Гев','Кибуц Дгания','Кибуц Мааган-Михаэль','Кибуц Нахшолим','Кибуц Бейт-Альфа'];
@@ -108,6 +117,6 @@ window.editOrder=id=>openForm('work',orders.find(o=>o.id===id));window.delOrder=
 $('themeBtn').onclick=()=>{document.body.classList.toggle('light');localStorage.setItem('cargoTheme',document.body.classList.contains('light')?'light':'dark');render()}; if(localStorage.getItem('cargoTheme')==='light')document.body.classList.add('light');
 $('shareBtn').onclick=async()=>{let url=location.origin+location.pathname; if(navigator.share){try{await navigator.share({title:'Календарь перевозок',text:'Календарь перевозок',url})}catch(e){}}else{prompt('Ссылка:',url)}};
 let sx=0,sy=0;$('swipeArea').addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});$('swipeArea').addEventListener('touchend',e=>{let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4)changeMonth(dx<0?1:-1)},{passive:true});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=16').catch(()=>{})}render();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=17').catch(()=>{})}render();
 </script>
 </body></html>
