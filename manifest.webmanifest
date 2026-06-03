@@ -1,1 +1,1 @@
-{"name":"Календарь перевозок","short_name":"Перевозки","start_url":"./index.html?v=16","display":"standalone","background_color":"#063a35","theme_color":"#063a35","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
+{"name":"Календарь перевозок","short_name":"Календарь","start_url":"./index.html","display":"standalone","background_color":"#031719","theme_color":"#063a35","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]}
