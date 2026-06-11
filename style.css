@@ -394,3 +394,56 @@
   .v19card .metricGrid small{font-size:8.3px!important}
   .v19card .calcMini span{font-size:8.8px!important;padding:3px 6px!important}
 }
+
+
+/* v35 Compact Metrics Row: return metrics to one line without overlap */
+.v19card .metricGrid{
+  display:grid!important;
+  grid-template-columns:1.02fr 1.14fr .92fr .98fr!important;
+  gap:0!important;
+  margin-top:9px!important;
+  padding-top:0!important;
+  width:100%!important;
+}
+.v19card .metricGrid>div{
+  min-width:0!important;
+  padding:0 8px!important;
+  border-top:0!important;
+  border-left:1px solid #dfeae4!important;
+}
+.v19card .metricGrid>div:first-child{
+  border-left:0!important;
+  padding-left:0!important;
+}
+.v19card .metricGrid small{
+  display:block!important;
+  font-size:9.2px!important;
+  line-height:1.05!important;
+  color:#748196!important;
+  font-weight:800!important;
+  margin-bottom:3px!important;
+  white-space:nowrap!important;
+}
+.v19card .metricGrid b{
+  display:block!important;
+  font-size:10.4px!important;
+  line-height:1.08!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  letter-spacing:-.12px!important;
+}
+.v19card .metricGrid .green{
+  color:#17994c!important;
+  font-size:10.7px!important;
+}
+.v19card .calcMini{margin-top:7px!important}
+.v19card .detailsPanel{display:none!important}
+@media(max-width:390px){
+  .v19card .metricGrid{grid-template-columns:1fr 1.12fr .88fr .96fr!important}
+  .v19card .metricGrid>div{padding:0 5px!important}
+  .v19card .metricGrid b{font-size:9.3px!important;letter-spacing:-.18px!important}
+  .v19card .metricGrid small{font-size:8.4px!important}
+  .v19card .metricGrid .green{font-size:9.5px!important}
+}
